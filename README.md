@@ -55,19 +55,30 @@ fetch('http://localhost:5000/create', {
 curl -i http://localhost:5000/create -X POST -H "Content-type: application/json" -d '{ "username": "dsetiadi", "password": "supersecret" }'
 ```
 
-## user/list
+## assets/
 
-### GET 
+### GET
 
-Request a list (array)  of existing usernames.
+Request a collection of records (mecha gifs). Requires an authentication token passed in as a header or an URL parameter.
 
 #### example calls
 
 ```js
-fetch('http://localhost:5000/users')
+fetch('http://localhost:5000/assets?token=<secret-token>)
 ```
 
 ```sh
-curl -i http://localhost:5000/users
+curl -i http://localhost:5000/assets -H "Authentication: Bearer <secret-token>"
 ```
 
+## assets/:id
+
+Request a specific record (mecha gif). Requires an authentication token passed in as a header or an URL parameter.
+
+```js
+fetch('http://localhost:5000/assets/yDwOH0MVWY61a?token=<secret-token>)
+```
+
+```sh
+curl -i http://localhost:5000/assets/yDwOH0MVWY61a -H "Authentication: Bearer <secret-token>"
+```
