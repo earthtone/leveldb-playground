@@ -1,0 +1,35 @@
+{
+  "name": "fakepi",
+  "version": "1.0.0",
+  "description": "Mock API Server",
+  "main": "index.js",
+  "scripts": {
+    "server:log": "nodemon index.js  --port 5000 | cat > server.log",
+    "server:dev": "nodemon index.js  --port 5000",
+    "start": "npm run server:dev"
+  },
+  "keywords": [
+    "node",
+    "js",
+    "javascript",
+    "api",
+    "server"
+  ],
+  "author": "Tonio Hubilla <t.hubilla@pointofcare360.com>",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "concat-stream": "^1.6.2",
+    "corsify": "^2.1.0",
+    "dotenv": "^5.0.1",
+    "from2-string": "^1.1.0",
+    "fs-extra": "^6.0.1",
+    "level": "^3.0.1",
+    "minimist": "^1.2.0",
+    "node-fetch": "^2.1.2",
+    "nodemon": "^1.17.4",
+    "server-router": "^6.0.0",
+    "to2": "^1.0.0"
+  },
+  "devDependencies": {}
+}
