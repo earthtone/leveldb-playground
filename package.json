@@ -29,6 +29,9 @@
     "node-fetch": "^2.1.2",
     "nodemon": "^1.17.4",
     "server-router": "^6.0.0",
+    "stream-to-async-iterable": "^1.0.8",
+    "stream-to-async-iterator": "^0.2.0",
+    "stream-to-iterator": "^3.0.1",
     "to2": "^1.0.0"
   },
   "devDependencies": {}

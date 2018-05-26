@@ -1,24 +1,12 @@
 require('dotenv').config();
 
 var http = require('http');
-
-var chalk = require('chalk');
 var options = require('minimist')(process.argv.slice(2));
 var PORT = options.port || 3000;
 
+var logRequestMessage = require('./lib/log-request-message');
 var router = require('server-router')();
 var server = http.createServer(function(req, res){
-	var requestLog = `
-🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-${chalk.yellow(new Date().toISOString().replace(/[A-Z]/g, ' '))} 
-${chalk.cyan('REQUEST:')} ${req.method} ${req.url}
-${chalk.cyan('ORIGIN:')} ${req.headers.origin} 
-${chalk.cyan('USER_AGENT:')} ${req.headers['user-agent']}	
-
-🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-	`;
-
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Request-Method', '*');
 	res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT');
@@ -30,31 +18,35 @@ ${chalk.cyan('USER_AGENT:')} ${req.headers['user-agent']}
 		return;
 	} 	
 
-	console.log(requestLog)
+	console.log(logRequestMessage(req));
 	router.match(req, res)
 });
 
 var level = require('level');
 var db = level('./api.db', { valueEncoding: 'json' });
-var initalizeDatabase = require('./lib/initialize-db')(db);
+var initalizeDatabase = require('./lib/initialize-db')(db, options);
 
 var authUser = require('./lib/auth-user');
 var createUser = require('./lib/create-user');
 var getUsers = require('./lib/get-users');
 var getAsset = require('./lib/get-asset');
 var getAssets = require('./lib/get-assets');
-var putAsset = require('./lib/put-asset');
-var postAsset = require('./lib/post-asset');
 
-authUser(router, db);
-createUser(router, db);
-getUsers(router, db);
+router.route('POST', '/user/auth', function(req, res, ctx){
+	authUser(req, res, { db, ...ctx});
+});
 
-getAssets(router, db);
+router.route('POST', 'user/create', function(req, res, ctx){
+	createUser(req, res, { db, ...ctx });
+});
 
-getAsset(router, db)
-putAsset(router, db);
-postAsset(router, db);
+router.route('GET', '/assets', function(req, res, ctx) {
+	getAssets(req, res, { db, ...ctx });
+});
+
+router.route('GET', '/assets/:id', function(req, res, ctx) {
+	getAsset(req, res, { db, ...ctx })
+});
 
 router.route('GET', '/*', function (req, res, ctx) {
 	res.statusCode = 404;
@@ -62,5 +54,7 @@ router.route('GET', '/*', function (req, res, ctx) {
 	res.end();
 });
 
-server.listen(PORT);
-
+server.listen(PORT, function(err){
+	if(err) console.error('🚨🚨🚨', err);
+	console.log(`✨ Listening on ${PORT} ✨`);	
+});
